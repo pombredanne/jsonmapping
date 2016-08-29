@@ -1,7 +1,7 @@
 import os
 import json
-import urllib
 import unicodecsv
+from six.moves.urllib.request import pathname2url
 
 from jsonschema import RefResolver  # noqa
 
@@ -16,8 +16,8 @@ def fixture_file(path):
 
 def fixture_uri(path):
     base = os.path.join(fixtures_dir, path)
-    base_uri = 'file://' + urllib.pathname2url(base)
-    with open(base, 'rb') as fh:
+    base_uri = 'file://' + pathname2url(base)
+    with open(base, 'r') as fh:
         return json.load(fh), base_uri
 
 
@@ -26,7 +26,7 @@ def create_resolver():
     schemas = os.path.join(fixtures_dir, 'schemas')
     for fn in os.listdir(schemas):
         path = os.path.join(schemas, fn)
-        with open(path, 'rb') as fh:
+        with open(path, 'r') as fh:
             data = json.load(fh)
             resolver.store[data.get('id')] = data
     return resolver
